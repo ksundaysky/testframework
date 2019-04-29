@@ -9,8 +9,6 @@ import pl.test.engine.TestEngineException;
 public class Main {
 
     public static void main(String[] args) throws TestEngineException {
-        TestTestEngine testTestEngine = new TestTestEngine();
-        System.out.println(testTestEngine.getClass().getName());
-        TestEngine.run("pl.test.client");
+        TestEngine.run();
     }
 }

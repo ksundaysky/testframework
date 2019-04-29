@@ -23,6 +23,26 @@ public interface TestEngine {
         }
     }
 
+    static void run() throws TestEngineException {
+        try {
+            String packageWithTest = getPackageOfCallingClass();
+            runTests(packageWithTest);
+        } catch (Throwable e) {
+            throw new TestEngineException(e);
+        }
+    }
+
+    static String getPackageOfCallingClass() {
+        // 0 - method Thread.getStackTrace()
+        // 1 - this method
+        // 2 - method calling this => 'run()'
+        // 3 - method calling 'run()' => e.g. 'main(String... args)'
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+        String packageWithTest = stackTraceElement.getClassName();
+        packageWithTest = packageWithTest.substring(0, packageWithTest.lastIndexOf("."));
+        return packageWithTest;
+    }
+
     static void runTests(String packageWithTest) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, TestEngineException {
         Reflections reflections = new Reflections(packageWithTest, new SubTypesScanner(false));
         for (Class<?> aClass : reflections.getSubTypesOf(Object.class)) {
